@@ -14,13 +14,13 @@ var cards_storage = ['#','#','@','@','&','&','$','$','?','?','%','%','(',')','('
 var cards_pushed = [];
 var cardids = [];
 var cardsFlippedc = 0;
+var flag=0;
 
 /* main function calling on window load*/
 window.onload= main;
 
 function main(){
 	gameConstruct();
-	util_fun();
 }
 
 //Shuffle function from http://stackoverflow.com/a/2450976
@@ -77,7 +77,6 @@ function format_time(val)
 
 //A utility function to display timer and star rating
 function util_fun(){
-	
         gametime = document.getElementById("timer");
 		gametime.innerHTML="0";
 		game_secs=0;
@@ -86,10 +85,11 @@ function util_fun(){
         setInterval(setInfoTandR, 1000);
 }
 		
-//initial board creation and flipping cardss
+//initial board creation and flipping cards
 function gameConstruct(){
 	document.getElementById('board').innerHTML = "";
 	cardsFlippedc = 0;
+	flag = 0;
 	movecount=0;
 	var output = '';
     cards_storage.shuffleUtil();
@@ -104,9 +104,13 @@ function gameConstruct(){
 	document.getElementById('timer').innerHTML = '0';
 }
 
-//functio dat performs all critical tasks when card id fliped or clicked.
+//functio that performs all critical tasks when card id fliped or clicked.
 function flipCardCheck(cardr,data){
 	//check if card is already flipped.
+	flag++;
+	if(flag == 1){
+		util_fun();
+	}
 	if(cardr.innerHTML == front_img && cards_pushed.length < 2){
 		//updating card value. incrementing move value and updating it on board.
 		cardr.innerHTML = data;
@@ -130,11 +134,8 @@ function flipCardCheck(cardr,data){
 				
 				// if it is end of game, display message.
 				if(cardsFlippedc == cards_storage.length){
-					var v = confirm("Cogratulations!! , Game completed successfuly. Time elapsed " +game_mins+" min "+ game_secs+" sec, "+
-					        "Rating given by the game "+starcount+" stars. Do you want to play it again ?");
-					if (v == true) {
-						 window.location.reload();
-					}
+					setTimeout(confirmCall, 1000);
+					
 				}
 				//if cards in array are different flip the cards again and clear cache arrays.
 			} 
@@ -151,4 +152,13 @@ function flipCardCheck(cardr,data){
 			}
 		}
 	}
+}
+
+function confirmCall()
+{
+	var v = confirm("Cogratulations!! , Game completed successfuly. Time elapsed " +game_mins+" min "+ game_secs+" sec, "+
+					        "Rating given by the game "+starcount+" stars. Do you want to play it again ?");
+					if (v == true) {
+						 window.location.reload();
+					}
 }
